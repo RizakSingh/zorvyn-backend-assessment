@@ -68,7 +68,7 @@ const limit = Math.min(parseInt(query.limit) || 20, 100); // cap at 100
   const filter = buildFilter(query, requestingUser);
 
   const [transactions, total] = await Promise.all([
-    Transaction.find(filter)
+    Transaction.find(filter).lean()
       .sort({ date: -1 })
       .skip(skip)
       .limit(limit)
