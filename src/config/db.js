@@ -10,5 +10,5 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
+console.log("MONGO URI:", process.env.MONGODB_URI);
 module.exports = connectDB;
