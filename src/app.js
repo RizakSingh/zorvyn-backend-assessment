@@ -5,16 +5,28 @@ const routes = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
 const { defaultLimiter } = require("./middleware/rateLimiter");
 const logger = require("./utils/logger");
-
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const cors = require("cors");
 const app = express();
 
-// ── Body parsing ────────────────────────────────────────────────────────────
+
+// ── Body parsing
 app.use(express.json({ limit: "10kb" }));
 
-// ── Global rate limiter ──────────────────────────────────────────────────────
+// ── Security headers
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(xss());
+app.use(cors());
+
+
+
+// ── Global rate limiter
 app.use(defaultLimiter);
 
-// ── Request logging (dev) ────────────────────────────────────────────────────
+// ── Request logging (dev)
 if (process.env.NODE_ENV !== "production") {
   app.use((req, _res, next) => {
     logger.debug(`${req.method} ${req.originalUrl}`);
@@ -22,18 +34,18 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// ── Routes ───────────────────────────────────────────────────────────────────
+// ── Routes 
 app.use("/api", routes);
 
-// ── 404 handler ──────────────────────────────────────────────────────────────
+// ── 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found.` });
 });
 
-// ── Centralized error handler (must be last) ─────────────────────────────────
+// ── Centralized error handler (must be last)
 app.use(errorHandler);
 
-// ── Start ─────────────────────────────────────────────────────────────────────
+// ── Start
 const PORT = process.env.PORT || 3000;
 
 connectDB().then(() => {

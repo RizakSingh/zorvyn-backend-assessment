@@ -11,9 +11,9 @@ const { ROLES } = require("../config/constants");
  * - Only the owner (or admin) can update/delete a transaction
  */
 
-// ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
+const escapeRegex = (text) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
  * Build a MongoDB filter object from query params.
@@ -37,12 +37,13 @@ const buildFilter = (query, requestingUser) => {
   }
 
   // Search in category or notes
-  if (query.search) {
-    filter.$or = [
-      { category: new RegExp(query.search, "i") },
-      { notes: new RegExp(query.search, "i") },
-    ];
-  }
+ if (query.search) {
+  const safeSearch = escapeRegex(query.search);
+  filter.$or = [
+    { category: new RegExp(safeSearch, "i") },
+    { notes: new RegExp(safeSearch, "i") },
+  ];
+}
 
   return filter;
 };
@@ -60,8 +61,8 @@ const createTransaction = async (data, requestingUser) => {
 };
 
 const getTransactions = async (query, requestingUser) => {
-  const page = query.page || 1;
-  const limit = Math.min(query.limit || 20, 100); // cap at 100
+const page = parseInt(query.page) || 1;
+const limit = Math.min(parseInt(query.limit) || 20, 100); // cap at 100
   const skip = (page - 1) * limit;
 
   const filter = buildFilter(query, requestingUser);
