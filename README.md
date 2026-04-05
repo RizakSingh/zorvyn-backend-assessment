@@ -1,8 +1,18 @@
 # Finance Dashboard Backend
-
-A clean, production-ready backend system for managing financial records with role-based access control and dashboard analytics.
-
+A production-ready backend system for managing financial transactions with role-based access control (RBAC), secure API design, and analytics capabilities.
 ---
+
+## Features
+
+1. JWT-based authentication and authorization
+2. Role-based access control (Admin / Analyst / Viewer)
+3. Full transaction management (CRUD operations)
+4. Analytics using MongoDB aggregation pipelines
+5. Pagination, filtering, and search functionality
+6. Security layer with Helmet, rate limiting, and sanitization
+7. Swagger API documentation
+8. Input validation using Zod
+9. Soft delete support for audit safety
 
 ## Tech Stack
 
@@ -139,6 +149,20 @@ All responses follow a consistent envelope:
 HTTP status codes used: `200`, `201`, `400`, `401`, `403`, `404`, `409`, `429`, `500`
 
 ---
+## API Documentation
+
+Swagger UI available at:
+http://localhost:3000/api/docs
+
+(Requires local server to be running)
+
+
+## Security Features
+1. Helmet for HTTP security headers
+2. MongoDB query sanitization
+3. JWT authentication with expiration
+4. Role-based access control
+5. Rate limiting to prevent abuse
 
 ## Setup
 
@@ -166,6 +190,45 @@ npm start      # production
 ```
 
 ---
+## Environment Variables
+
+PORT=3000
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+JWT_EXPIRES_IN=7d
+REDIS_URL=your_redis_url
+
+## Example Response
+
+{
+"success": true,
+"message": "Transactions retrieved",
+"data": {
+"transactions": [],
+"pagination": {
+"page": 1,
+"limit": 10,
+"total": 50
+}
+}
+}
+
+## Design Decisions
+
+1. Service layer used for separation of business logic
+2. RBAC enforced at both middleware and service level
+3. MongoDB aggregation used for efficient analytics
+4. Soft delete implemented for audit and recovery
+
+
+## Future Improvements
+
+1. Redis caching for analytics
+2. Background job processing (BullMQ / Kafka)
+3. Automated testing (Jest)
+4. Docker deployment
+5. Microservices architecture
+
 
 ## Authentication
 
@@ -188,3 +251,7 @@ Tokens are returned on `/api/auth/register` and `/api/auth/login`.
 5. **Soft delete** — transactions are flagged with `isDeleted: true`; they are excluded from all queries but remain in the database for audit purposes.
 6. **No refresh tokens** — JWT tokens expire in 7 days. Refresh token rotation is a recommended production enhancement.
 7. **No email verification** — user registration is immediate. In production, add email confirmation flow.
+
+# Author
+
+Rizak Singh

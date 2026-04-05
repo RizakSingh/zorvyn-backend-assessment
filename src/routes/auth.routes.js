@@ -9,7 +9,7 @@ const { registerSchema, loginSchema } = require("../validators/auth.validators")
 
 /**
  * @swagger
- * /auth/register:
+ * /api/auth/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
@@ -36,11 +36,11 @@ const { registerSchema, loginSchema } = require("../validators/auth.validators")
  *       201:
  *         description: User registered successfully
  */
-// POST /api/auth/register
 router.post("/register", authLimiter, validateBody(registerSchema), authController.register);
+
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Auth]
@@ -59,11 +59,11 @@ router.post("/register", authLimiter, validateBody(registerSchema), authControll
  *       200:
  *         description: Login successful
  */
-// POST /api/auth/login
 router.post("/login", authLimiter, validateBody(loginSchema), authController.login);
+
 /**
  * @swagger
- * /auth/me:
+ * /api/auth/me:
  *   get:
  *     summary: Get current user
  *     tags: [Auth]
@@ -73,7 +73,6 @@ router.post("/login", authLimiter, validateBody(loginSchema), authController.log
  *       200:
  *         description: Current user
  */
-// GET /api/auth/me  (protected)
 router.get("/me", authenticate, authController.getMe);
 
 module.exports = router;
