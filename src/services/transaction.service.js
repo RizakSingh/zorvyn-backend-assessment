@@ -123,7 +123,13 @@ const updateTransaction = async (id, data, requestingUser) => {
     throw new AppError("You can only update your own transactions.", 403);
   }
 
-  Object.assign(transaction, data);
+  const allowedFields = ["amount", "type", "category", "date", "notes"];
+
+allowedFields.forEach((field) => {
+  if (data[field] !== undefined) {
+    transaction[field] = data[field];
+  }
+});
   await transaction.save();
 
   return transaction;
